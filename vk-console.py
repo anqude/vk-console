@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import vk_api # ~ библиотека вк
+import vk_api # ~ библиотека
 import os # ~ для отчистки экрана
 import time # ~ для задержки
 import datetime # ~ для времени отправки сообщения
