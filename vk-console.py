@@ -31,11 +31,10 @@ def message_input():
 
 def message_send(personal_id):
     # ~ пишем сообщение юзеру с personal_id которы обявляли в def users_ids()
-    print("The message has been sent") # ~ просто,факт что отправили
-	time.sleep(0.5)
-	os.system('clear') # ~ просто отчищаем экран
+    print("The message has been sent")  # ~ просто,факт что отправили
+    time.sleep(0.5)
+    os.system('clear')  # ~ просто отчищаем экран
     vk.messages.send(peer_id=personal_id, message=message_text, random_id=0)
-    
 
 
 def users_ids():
@@ -81,8 +80,8 @@ def message_view():
             '%Y-%m-%d %H:%M:%S')+": "+t.get("items")[i].get("text")
         print(text)
         global message_id
-		message_id = str(t.get("items")[i].get("id"))
-		print("message id:",message_id)
+        message_id = str(t.get("items")[i].get("id"))
+        print("message id:", message_id)
 
 
 def us_ids():
@@ -111,15 +110,17 @@ def list_id():  # ~ получение собственного id и созда
                   str(vk.account.getProfileInfo().get("last_name")))  # получение своего имени
     ids.update({my_id: my_name})  # изменение словаря
 
-def del_message(agree,message_id):
-	if agree=='y':
-		vk.messages.delete(delete_for_all=True, message_ids=message_id)
-	if agree=='custom':
-		message_id=input("custom message id:")
-		vk.messages.delete(delete_for_all=True, message_ids=message_id)
-	time.sleep(0.5)
-	os.system('clear') # ~ просто отчищаем экран	
-    
+
+def del_message(agree, message_id):
+    if agree == 'y':
+        vk.messages.delete(delete_for_all=True, message_ids=message_id)
+    if agree == 'custom':
+        message_id = input("custom message id:")
+        vk.messages.delete(delete_for_all=True, message_ids=message_id)
+    time.sleep(0.5)
+    os.system('clear')  # ~ просто отчищаем экран
+
+
 autorization(str(input("personal vk token >>")))  # ~ вводим токен
 
 
@@ -130,4 +131,6 @@ while True:
     message_view()
     message_input()
     message_send(personal_id)
-    del_message(str(input("Want to delete last message ('y','n' or 'custom') >>")),message_id)
+    del_message(
+        str(input("Want to delete last message ('y','n' or 'custom') >>")), message_id)
+
