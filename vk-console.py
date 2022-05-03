@@ -18,17 +18,11 @@ def message_input():
     global message_text
     # ~ Считываем текст сообщения
     message_text = str(input("Сообщение (exit чтобы выйти) >> "))
-    print("The message has been sent")  # ~ просто,факт что отправили
-    time.sleep(0.5)
-    os.system('clear')  # ~ просто отчищаем экран
     while True:
         if message_text == "":  # ~ Если сообщение пустое, считываем текст его снова
             # ~ просто рисуем строку
             print("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
             message_text = str(input("Сообщение >>"))  # ~ считываем сообщение
-            print("The message has been sent")  # ~ просто,факт что отправили
-            time.sleep(0.5)
-            os.system('clear')  # ~ просто отчищаем экран
         elif message_text == "exit":
             users_ids()
         else:
@@ -37,7 +31,11 @@ def message_input():
 
 def message_send(personal_id):
     # ~ пишем сообщение юзеру с personal_id которы обявляли в def users_ids()
+    print("The message has been sent") # ~ просто,факт что отправили
+	time.sleep(0.5)
+	os.system('clear') # ~ просто отчищаем экран
     vk.messages.send(peer_id=personal_id, message=message_text, random_id=0)
+    
 
 
 def users_ids():
@@ -82,6 +80,9 @@ def message_view():
         text = str(us_ids().get(t.get("items")[i].get("from_id"))) + " "+date.strftime(
             '%Y-%m-%d %H:%M:%S')+": "+t.get("items")[i].get("text")
         print(text)
+        global message_id
+		message_id = str(t.get("items")[i].get("id"))
+		print("message id:",message_id)
 
 
 def us_ids():
@@ -101,7 +102,7 @@ def us_ids():
     return ids
 
 
-def Myid():  # ~ получение собственного id и создание словаря с id
+def list_id():  # ~ получение собственного id и создание словаря с id
     global ids
     ids = {}  # словарь со всеми id
     global my_id
@@ -110,14 +111,23 @@ def Myid():  # ~ получение собственного id и создан�
                   str(vk.account.getProfileInfo().get("last_name")))  # получение своего имени
     ids.update({my_id: my_name})  # изменение словаря
 
-
+def del_message(agree,message_id):
+	if agree=='y':
+		vk.messages.delete(delete_for_all=True, message_ids=message_id)
+	if agree=='custom':
+		message_id=input("custom message id:")
+		vk.messages.delete(delete_for_all=True, message_ids=message_id)
+	time.sleep(0.5)
+	os.system('clear') # ~ просто отчищаем экран	
+    
 autorization(str(input("personal vk token >>")))  # ~ вводим токен
 
 
 while True:
-    Myid()
+    list_id()
     users_ids()
     message_get()
     message_view()
     message_input()
     message_send(personal_id)
+    del_message(str(input("Want to delete last message ('y','n' or 'custom') >>")),message_id)
