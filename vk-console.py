@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from textwrap import indent
+from settings import *
 import vk_api  # ~ библиотека вк
 import os  # ~ для отчистки экрана
 import time  # ~ для задержки
-import datetime  # ~ для времени отправки сообщения
-import os  # ~ для работы с консолью
+from datetime import *  # ~ для времени отправки сообщения
 import json
-
+start_time = datetime.now()
 class Logics(object):
 
     def auth(self, personal_token):
@@ -69,47 +68,38 @@ class Logics(object):
             print("Del message ERROR")
 
     
-    def us_ids(self, personal_id, my_id, ids, session):
+    def us_ids(self, personal_id, session):
         try:
             members = session.messages.getConversationMembers(peer_id=personal_id)
-            if personal_id != str(my_id):
-                for i in range(members.get("count")):
-                    name = str(members.get("profiles")[i].get(
-                        "first_name"))+" "+str(members.get("profiles")[i].get("last_name"))
-                    id_mem = members.get("profiles")[i].get("id")
-                    ids.update({id_mem: name})  # занесение в словарь id и имени
-            else:
-                for i in range(members.get("count")-1):
-                    name = str(members.get("profiles")[i].get(
-                        "first_name"))+" "+str(members.get("profiles")[i].get("last_name"))
-                    id_mem = members.get("profiles")[i].get("id")
-                    ids.update({id_mem: name})  # занесение в словарь id и имени
-            return ids
+            print(members.get("items"))
         except:
             print("User ids ERROR")
 
-    def save_peoples(self, personal_ids, session):
-        j = js()
-        ps = session.users.get(user_ids = personal_ids)
-        peoples = j.jtpy("peoples.json")
-        ids = []
-        for i in peoples:
-            ids.append(str(i.get("id")))
-        ids.append(personal_ids)
-        pyj = session.users.get(user_ids = ids)
-        j.pytj(pyj,"peoples.json")
-
-
-class Console(object):
-    def view(self, title, text, input_text):
+    def save_peoples(self, personal_ids, session, json):
         try:
-            os.system("cls")
-            print(title,"\n\n")
-            print(text)
-            a = input(input_text)
-            return a
+            peoples = json.jtpy("peoples.json")
+            ids = []
+            for i in peoples:
+                ids.append(i.get("id"))
+            for i in personal_ids:
+                if (i in ids) == False:
+                    ids.append(i)
+            pyj = session.users.get(user_ids = ids)
+            json.pytj(pyj,"peoples.json")
+            return pyj
         except:
-            print("Console ERROR")
+            print("Save peoples ERROR")
+
+    def get_dialogs_info(self,session,number):
+        conversations = session.messages.getConversations(count=number,extended=1)
+        conversations_info = {}
+        
+        """for i in range(len(conversations)):
+            name = conversations["profiles"][i]["first_name"]+" "+conversations["profiles"][i]["last_name"]
+            id = conversations["items"][i]["conversation"]["peer"]["id"]
+            print(i,name,id)
+            conversations_info.update({id: name})"""
+        return conversations
 
 
 class js(object):
@@ -128,13 +118,20 @@ class js(object):
             py = json.load(f)
             return py
         except:
+            py = []
             print("JTPY ERROR")
+            return py
         
-
 
 def main():
     obj = Logics()
-    sess = obj.auth(input("введите персональный токен(https://vkhost.github.io/): "))
+    sess = obj.auth(Token)
     j = js()
+    print(obj.get_dialogs_info(sess,1))
     
+    
+    
+
 main()
+print(datetime.now() - start_time)
+
