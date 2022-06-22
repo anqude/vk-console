@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from settings import *
+from re import T
+from tokenize import Token
 import vk_api  # ~ библиотека вк
 import os  # ~ для отчистки экрана
 import time  # ~ для задержки
@@ -90,16 +91,14 @@ class Logics(object):
         except:
             print("Save peoples ERROR")
 
-    def get_dialogs_info(self,session,number):
-        conversations = session.messages.getConversations(count=number,extended=1)
-        conversations_info = {}
-        
-        """for i in range(len(conversations)):
-            name = conversations["profiles"][i]["first_name"]+" "+conversations["profiles"][i]["last_name"]
-            id = conversations["items"][i]["conversation"]["peer"]["id"]
-            print(i,name,id)
-            conversations_info.update({id: name})"""
-        return conversations
+    def get_dialogs(self,session,number):
+        dialogs_count = session.messages.getConversations(count=number,extended=1)["count"]
+        dialogs = {"count": dialogs_count, "ids":[]}
+
+        for i in range(number):
+            dialogs_ids = session.messages.getConversations(count=number,extended=1)["items"][i]["conversation"]["peer"]["id"]
+            dialogs["ids"].append(dialogs_ids)
+        return dialogs
 
 
 class js(object):
@@ -125,13 +124,27 @@ class js(object):
 
 def main():
     obj = Logics()
-    sess = obj.auth(Token)
+    sess = obj.auth(TOKEN)
     j = js()
-    print(obj.get_dialogs_info(sess,1))
     
     
     
+if __name__ == "__main__":
+    f = open("settings.json","r")
+    py = json.load(f)
+    if py["Token"] == "":
+        global TOKEN
+        TOKEN = input("введите свой токен: ")
+        pyj = {"Token":TOKEN}
+        j = json.dumps(pyj, indent=4)
+        f = open("settings.json","w")
+        f.write(j)
+        main()
 
-main()
+    else:
+        f = open("settings.json","r")
+        py = json.load(f)
+        TOKEN = py["Token"]
+        main()
+
 print(datetime.now() - start_time)
-
