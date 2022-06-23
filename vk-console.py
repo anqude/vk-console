@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from re import T
 from tokenize import Token
@@ -7,7 +7,7 @@ import os  # ~ для отчистки экрана
 import time  # ~ для задержки
 from datetime import *  # ~ для времени отправки сообщения
 import json
-start_time = datetime.now()
+start_time = datetime.now() # ~ обозначаем время запуска
 class Logics(object):
 
     def auth(self, personal_token):
@@ -47,20 +47,20 @@ class Logics(object):
         except:
             print("Get info about me ERROR")
         
-    def history_get(self, personal_id, session, count_=200):
+    def history_get(self, personal_id, session, count_=200): #~ история сообщений для указанного диалога
         try:
-            t = session.messages.getHistory(count=count_, peer_id=personal_id, rev=0)
-            return t
+            MessageHistory = session.messages.getHistory(count=count_, peer_id=personal_id, rev=0)
+            return MessageHistory
         except:
             print("History get ERROR")
 
 
-    def del_message(self, message_id, session, agree="n"):
+    def del_message(self, message_id, session, agree="n"): #~ Удаление сообщения
         try:
             if agree == 'y':
-                session.messages.delete(delete_for_all=True, message_ids=message_id)
+                session.messages.delete(delete_for_all=True, message_ids=message_id) #~ Удалить последнее сообщение
             
-            if agree == 'custom':
+            if agree == 'custom': #~ Удалить выбранное по id сообщение
                 message_id = input("custom message id:")
                 session.messages.delete(delete_for_all=True, message_ids=message_id)
             message = session.message.getById(message_ids=message_id)
@@ -128,23 +128,18 @@ def main():
     j = js()
     
     
-    
-if __name__ == "__main__":
-    f = open("settings.json","r")
-    py = json.load(f)
-    if py["Token"] == "":
-        global TOKEN
-        TOKEN = input("введите свой токен: ")
-        pyj = {"Token":TOKEN}
-        j = json.dumps(pyj, indent=4)
-        f = open("settings.json","w")
-        f.write(j)
-        main()
+settings_open= open("settings.json","r")
+py = json.load(settings_open)
+if py["Token"] == "":
+    global TOKEN
+    TOKEN = input("введите свой токен: ")
+    pyj = {"Token":TOKEN}
+    j = json.dumps(pyj, indent=4)
+    settings_open = open("settings.json","w")
+    settings_open.write(j)
 
-    else:
-        f = open("settings.json","r")
-        py = json.load(f)
-        TOKEN = py["Token"]
-        main()
+else:
+    TOKEN = py["Token"]
+main()
 
-print(datetime.now() - start_time)
+print(datetime.now() - start_time) # время от запуска кода до его завершения
