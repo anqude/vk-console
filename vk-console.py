@@ -114,23 +114,16 @@ class Logics:
 
         return k
 
-    def get_chat_members(self, session, count, dialog_id):
+    def get_chat_members(self, session, dialog_id):
 
         k=[]
         members = session.messages.getChat(chat_id =dialog_id, fields='nickname')
         kolvo=int(members["members_count"])
-        if int(count) > kolvo:
-            for i in range (kolvo):
-                first_name=str(members["users"][i]["first_name"])
-                last_name = str(members["users"][i]["last_name"])
-                id = str(members["users"][i]["id"])
-                k.append({"id": id, "first_name": first_name, "last_name": last_name})
-        else:
-            for i in range (int(count)):
-                first_name=str(members["users"][i]["first_name"])
-                last_name = str(members["users"][i]["last_name"])
-                id = str(members["users"][i]["id"])
-                k.append({"id": id, "first_name": first_name, "last_name": last_name})
+        for i in range (kolvo):
+            first_name=str(members["users"][i]["first_name"])
+            last_name = str(members["users"][i]["last_name"])
+            id = str(members["users"][i]["id"])
+            k.append({"id": id, "first_name": first_name, "last_name": last_name})
 
         return k
 
