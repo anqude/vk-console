@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from re import T
-from tokenize import Token
 import vk_api  # ~ библиотека вк
 import os  # ~ для отчистки экрана
 import time  # ~ для задержки
 from datetime import *  # ~ для времени отправки сообщения
 import json
+
 start_time = datetime.now() # ~ обозначаем время запуска
-class Logics(object):
+
+class Logics:
 
     def auth(self, personal_token):
         try:
@@ -92,14 +92,47 @@ class Logics(object):
             print("Save peoples ERROR")
 
     def get_dialogs(self,session,number):
-        dialogs_count = session.messages.getConversations(count=number,extended=1)["count"]
-        dialogs = {"count": dialogs_count, "ids":[]}
+        dialogs_obj = session.messages.getConversations(count=number,extended=1)
+        dialogs = {"count": dialogs_obj["count"], "ids":[]}
+
 
         for i in range(number):
-            dialogs_ids = session.messages.getConversations(count=number,extended=1)["items"][i]["conversation"]["peer"]["id"]
+            dialogs_ids = dialogs_obj["items"][i]["conversation"]["peer"]["id"]
             dialogs["ids"].append(dialogs_ids)
         return dialogs
 
+
+    def get_friends(self, us_id, number, session):
+        k={}
+        j = session.friends.get(user_id=us_id, order="random", count=number, fields='nickname')
+
+        for i in range(number):
+            first_name = j["items"][i]["first_name"]
+            last_name = j["items"][i]["last_name"]
+            id = j["items"][i]["id"]
+            k.update({id: first_name + " " + last_name})
+
+        return k
+
+    def get_chat_members(self, session, count, dialog_id):
+
+        k=[]
+        members = session.messages.getChat(chat_id =dialog_id, fields='nickname')
+        kolvo=int(members["members_count"])
+        if int(count) > kolvo:
+            for i in range (kolvo):
+                first_name=str(members["users"][i]["first_name"])
+                last_name = str(members["users"][i]["last_name"])
+                id = str(members["users"][i]["id"])
+                k.append({"id": id, "first_name": first_name, "last_name": last_name})
+        else:
+            for i in range (int(count)):
+                first_name=str(members["users"][i]["first_name"])
+                last_name = str(members["users"][i]["last_name"])
+                id = str(members["users"][i]["id"])
+                k.append({"id": id, "first_name": first_name, "last_name": last_name})
+
+        return k
 
 class js(object):
     def pytj(self, PyObject, file_name):
@@ -126,6 +159,7 @@ def main():
     obj = Logics()
     sess = obj.auth(TOKEN)
     j = js()
+    print(obj.get_chat_members(sess, "14", "22"))
     
     
 settings_open= open("settings.json","r")
