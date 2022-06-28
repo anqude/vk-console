@@ -103,29 +103,29 @@ class Logics:
 
 
     def get_friends(self, us_id, number, session):
-        k={}
+        friends={}
         j = session.friends.get(user_id=us_id, order="random", count=number, fields='nickname')
 
         for i in range(number):
             first_name = j["items"][i]["first_name"]
             last_name = j["items"][i]["last_name"]
             id = j["items"][i]["id"]
-            k.update({id: first_name + " " + last_name})
+            friends.update({id: first_name + " " + last_name})
 
-        return k
+        return friends
 
     def get_chat_members(self, session, dialog_id):
 
-        k=[]
+        chat_members=[]
         members = session.messages.getChat(chat_id =dialog_id, fields='nickname')
         kolvo=int(members["members_count"])
         for i in range (kolvo):
             first_name=str(members["users"][i]["first_name"])
             last_name = str(members["users"][i]["last_name"])
             id = str(members["users"][i]["id"])
-            k.append({"id": id, "first_name": first_name, "last_name": last_name})
+            chat_members.append({"id": id, "first_name": first_name, "last_name": last_name})
 
-        return k
+        return chat_members
 
 class js(object):
     def pytj(self, PyObject, file_name):
