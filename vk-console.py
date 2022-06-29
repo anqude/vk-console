@@ -110,32 +110,38 @@ class Logics:
         return dialogs
 
     def get_friends(self, us_id, number, session):
-        friends = {}
-        j = session.friends.get(
-            user_id=us_id, order="random", count=number, fields='nickname')
+        try:
+            friends = {}
+            j = session.friends.get(
+                user_id=us_id, order="random", count=number, fields='nickname')
 
-        for i in range(number):
-            first_name = j["items"][i]["first_name"]
-            last_name = j["items"][i]["last_name"]
-            id = j["items"][i]["id"]
-            friends.update({id: first_name + " " + last_name})
+            for i in range(number):
+                first_name = j["items"][i]["first_name"]
+                last_name = j["items"][i]["last_name"]
+                id = j["items"][i]["id"]
+                friends.update({id: first_name + " " + last_name})
 
-        return friends
+            return friends
+        except:
+            return "Get Friends ERROR"
 
     def get_chat_members(self, session, dialog_id):
-
-        chat_members = []
-        members = session.messages.getChat(
-            chat_id=dialog_id, fields='nickname')
-        kolvo = int(members["members_count"])
-        for i in range(kolvo):
-            first_name = str(members["users"][i]["first_name"])
-            last_name = str(members["users"][i]["last_name"])
-            id = str(members["users"][i]["id"])
-            chat_members.append(
-                {"id": id, "first_name": first_name, "last_name": last_name})
-
-        return chat_members
+        try:
+            chat_members = []
+            members = session.messages.getChat(
+                chat_id=dialog_id, fields='nickname')
+            kolvo = int(members["members_count"])
+            for i in range(kolvo):
+                first_name = str(members["users"][i]["first_name"])
+                last_name = str(members["users"][i]["last_name"])
+                id = str(members["users"][i]["id"])
+                chat_members.append(
+                    {"id": id, "first_name": first_name, "last_name": last_name})
+            
+            return chat_members
+        
+        except:
+            return "Get Vhat Members ERROR"
 
 
 class js(object):
