@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# anton sosi
+
 import vk_api  # ~ библиотека вк
 import os  # ~ для отчистки экрана
 import time  # ~ для задержки
