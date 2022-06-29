@@ -137,9 +137,9 @@ class Logics:
                 id = str(members["users"][i]["id"])
                 chat_members.append(
                     {"id": id, "first_name": first_name, "last_name": last_name})
-            
+
             return chat_members
-        
+
         except:
             return "Get Vhat Members ERROR"
 
