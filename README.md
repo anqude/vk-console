@@ -1,2 +1,1 @@
-                                                                                          
-just our vk client
+Just our VK client
